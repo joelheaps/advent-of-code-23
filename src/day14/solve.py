@@ -2,7 +2,7 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 
-INPUT: Path = Path("input.txt")    
+INPUT: Path = Path("input.txt")
 
 
 def rotate_str(string: str, reverse: bool = False) -> list[list]:
@@ -45,6 +45,7 @@ def slide_rocks_north(pattern: str) -> str:
     pattern = "\n".join(newlines)
     return rotate_str(pattern, reverse=True)
 
+
 def get_load(pattern: str) -> int:
     pattern_lines = pattern.splitlines()
     pattern_lines.reverse()
@@ -59,6 +60,7 @@ def get_load(pattern: str) -> int:
 
     return sum(line_loads)
 
+
 def main():
     with INPUT.open("r") as f:
         pattern: str = f.read()
@@ -71,6 +73,7 @@ def main():
 
     print(f"Old load: {old_load}\nNew load: {load}")
 
+
 def main_2():
     with INPUT.open("r") as f:
         pattern: str = f.read()
@@ -82,6 +85,7 @@ def main_2():
     load = get_load(pattern)
 
     print(f"{pattern}\nLoad: {load}")
+
 
 if __name__ == "__main__":
     main_2()
