@@ -4,6 +4,8 @@ from .solve import (
     check_row_symmetry_at_column,
     check_all_rows_for_symmetry_at_column,
     find_symmetry_column,
+    rotate_str,
+    find_symmetry_row,
 )
 
 
@@ -16,6 +18,17 @@ def vertical_pattern() -> str:
 ..#.##.#.
 ..##..##.
 #.#.##.#."""
+
+
+@pytest.fixture
+def horizontal_pattern() -> str:
+    return """#...##..#
+#....#..#
+..##..###
+#####.##.
+#####.##.
+..##..###
+#....#..#"""
 
 
 def test_mirror_left_side():
@@ -38,3 +51,36 @@ def test_check_all_rows_for_symmetry_at_column(vertical_pattern):
 def test_find_symmetry_column(vertical_pattern):
     assert find_symmetry_column(vertical_pattern) == 5
     assert find_symmetry_column("9678dfv") is None
+
+
+def test_rotate_str():
+    assert (
+        rotate_str(
+            """asd
+fgh"""
+        )
+        == """dh
+sg
+af"""
+    )
+
+
+def test_find_symmetry_row(horizontal_pattern):
+    alt_pattern1: str = """#.##..##.
+..#.##.#.
+##......#
+##......#
+..#.##.#.
+..##..##.
+#.#.##.#."""
+
+    alt_pattern2: str = """#...##..#
+#....#..#
+..##..###
+#####.##.
+#####.##.
+..##..###
+#....#..#"""
+    assert find_symmetry_row(horizontal_pattern) == 4
+    assert find_symmetry_row(alt_pattern1, one_off=True) == 3
+    assert find_symmetry_row(alt_pattern2, one_off=True) == 1
