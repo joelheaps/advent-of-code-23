@@ -1,15 +1,14 @@
 import numpy as np
 from pathlib import Path
 from tqdm import tqdm
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 INPUT: Path = Path("input.txt")
+CYCLES: int = 1000000000
 
-EXECUTOR = ProcessPoolExecutor(max_workers=16)
 
-
-def rotate_str(string: str, reverse: bool = False) -> list[list]:
-    n_times: int = 3 if reverse else 1
+def rotate_str(string: str, clockwise: bool = False) -> list[list]:
+    n_times: int = 3 if clockwise else 1
     rows: list[list[str]] = [
         list(row) for row in string.splitlines()
     ]  # Split strings into lists
@@ -42,13 +41,58 @@ def slide_rocks_north(pattern: str) -> str:
 
     pattern_lines = pattern.splitlines()
 
-    # results = EXECUTOR.map(shift_rocks_in_line, pattern_lines)
     results = []
     for line in pattern_lines:
         results.append(shift_rocks_in_line(line))
 
     pattern = "\n".join(results)
-    return rotate_str(pattern, reverse=True)
+    return rotate_str(pattern, clockwise=True)
+
+
+def slide_rocks_west(pattern: str) -> str:
+    """Moves all round rocks as far "up" as they can move, until either a square
+    rock or edge is encountered."""
+    pattern_lines = pattern.splitlines()
+
+    results = []
+    for line in pattern_lines:
+        results.append(shift_rocks_in_line(line))
+
+    return "\n".join(results)
+
+
+def slide_rocks_south(pattern: str) -> str:
+    """Moves all round rocks as far "up" as they can move, until either a square
+    rock or edge is encountered."""
+
+    # rotate string left so rocks can be moved in same line.
+    pattern = rotate_str(pattern, clockwise=True)
+
+    pattern_lines = pattern.splitlines()
+
+    results = []
+    for line in pattern_lines:
+        results.append(shift_rocks_in_line(line))
+
+    pattern = "\n".join(results)
+    return rotate_str(pattern)
+
+
+def slide_rocks_east(pattern: str) -> str:
+    """Moves all round rocks as far "up" as they can move, until either a square
+    rock or edge is encountered."""
+
+    # rotate string left so rocks can be moved in same line.
+    pattern = rotate_str(rotate_str(pattern))
+
+    pattern_lines = pattern.splitlines()
+
+    results = []
+    for line in pattern_lines:
+        results.append(shift_rocks_in_line(line))
+
+    pattern = "\n".join(results)
+    return rotate_str(rotate_str(pattern))
 
 
 def get_load(pattern: str) -> int:
@@ -83,13 +127,30 @@ def main_2():
     with INPUT.open("r") as f:
         pattern: str = f.read()
 
-    for i in tqdm(range(1000)):  # Add progress bar
+    patterns = {}
+    i = 1
+    while True:
         pattern = slide_rocks_north(pattern)
-        pattern = rotate_str(pattern)
+        pattern = slide_rocks_west(pattern)
+        pattern = slide_rocks_south(pattern)
+        pattern = slide_rocks_east(pattern)
+
+        print(f"Adding pattern {i}")
+        if pattern in patterns:
+            break
+        patterns[pattern] = None
+
+        i += 1
+
+    all_possible_patterns_ordered: list[str] = list(patterns.keys())
+
+    remainder = CYCLES % len(all_possible_patterns_ordered)
+
+    pattern = all_possible_patterns_ordered[remainder]
 
     load = get_load(pattern)
 
-    print(f"{pattern}\nLoad: {load}")
+    print(f"{pattern}\n\nRemainder: {remainder}\nLoad: {load}")
 
 
 if __name__ == "__main__":
