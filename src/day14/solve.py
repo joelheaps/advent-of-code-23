@@ -1,8 +1,11 @@
 import numpy as np
 from pathlib import Path
 from tqdm import tqdm
+from concurrent.futures import ProcessPoolExecutor
 
 INPUT: Path = Path("input.txt")
+
+EXECUTOR = ProcessPoolExecutor(max_workers=16)
 
 
 def rotate_str(string: str, reverse: bool = False) -> list[list]:
@@ -38,11 +41,13 @@ def slide_rocks_north(pattern: str) -> str:
     pattern = rotate_str(pattern)
 
     pattern_lines = pattern.splitlines()
-    newlines = []
-    for line in pattern_lines:
-        newlines.append(shift_rocks_in_line(line))
 
-    pattern = "\n".join(newlines)
+    # results = EXECUTOR.map(shift_rocks_in_line, pattern_lines)
+    results = []
+    for line in pattern_lines:
+        results.append(shift_rocks_in_line(line))
+
+    pattern = "\n".join(results)
     return rotate_str(pattern, reverse=True)
 
 
