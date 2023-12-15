@@ -28,7 +28,9 @@ def check_row_symmetry_at_column(row: str, column_n: int) -> bool:
     return left_trimmed == right_trimmed
 
 
-def check_all_rows_for_symmetry_at_column(pattern: str, column_n: int, one_off: bool = False) -> bool:
+def check_all_rows_for_symmetry_at_column(
+    pattern: str, column_n: int, one_off: bool = False
+) -> bool:
     rows: list[str] = pattern.splitlines()
     test_cases: list[bool] = []
 
@@ -38,7 +40,7 @@ def check_all_rows_for_symmetry_at_column(pattern: str, column_n: int, one_off: 
 
     if one_off:
         return True if test_cases.count(False) == 1 else False
-    
+
     return all(test_cases)
 
 
@@ -90,10 +92,11 @@ def main_2():
             if column_n:
                 print(f"Found new symmetry row {column_n} in pattern \n{pattern}")
                 columns_left.append(column_n)
-    
 
     print(f"Sum of columns left of symmetry lines: {sum(columns_left)}")
-    print(f"Sum of rows above symmetry lines: {sum(rows_above)}, * 100 = {sum(rows_above) * 100}")
+    print(
+        f"Sum of rows above symmetry lines: {sum(rows_above)}, * 100 = {sum(rows_above) * 100}"
+    )
     print(f"Sum of both: {sum(columns_left) + (100 * sum(rows_above))}")
 
 
@@ -115,9 +118,11 @@ def main_1():
                 rows_above.append(row_n)
 
     print(f"Sum of columns left of symmetry lines: {sum(columns_left)}")
-    print(f"Sum of rows above symmetry lines: {sum(rows_above)}, * 100 = {sum(rows_above) * 100}")
+    print(
+        f"Sum of rows above symmetry lines: {sum(rows_above)}, * 100 = {sum(rows_above) * 100}"
+    )
     print(f"Sum of both: {sum(columns_left) + (100 * sum(rows_above))}")
-                
+
 
 if __name__ == "__main__":
     if PART == 1:

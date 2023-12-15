@@ -1,7 +1,5 @@
 import numpy as np
 from pathlib import Path
-from tqdm import tqdm
-from concurrent.futures import ThreadPoolExecutor
 
 INPUT: Path = Path("input.txt")
 CYCLES: int = 1000000000
@@ -35,8 +33,6 @@ def shift_rocks_in_line(line: str) -> str:
 def slide_rocks_north(pattern: str) -> str:
     """Moves all round rocks as far "up" as they can move, until either a square
     rock or edge is encountered."""
-
-    # rotate string left so rocks can be moved in same line.
     pattern = rotate_str(pattern)
 
     pattern_lines = pattern.splitlines()
@@ -81,8 +77,6 @@ def slide_rocks_south(pattern: str) -> str:
 def slide_rocks_east(pattern: str) -> str:
     """Moves all round rocks as far "up" as they can move, until either a square
     rock or edge is encountered."""
-
-    # rotate string left so rocks can be moved in same line.
     pattern = rotate_str(rotate_str(pattern))
 
     pattern_lines = pattern.splitlines()
@@ -136,6 +130,7 @@ def main_2():
         pattern = slide_rocks_east(pattern)
 
         print(f"Adding pattern {i}")
+
         if pattern in patterns:
             break
         patterns[pattern] = None
@@ -143,10 +138,10 @@ def main_2():
         i += 1
 
     all_possible_patterns_ordered: list[str] = list(patterns.keys())
-
-    remainder = CYCLES % len(all_possible_patterns_ordered)
-
-    pattern = all_possible_patterns_ordered[remainder]
+    remainder = CYCLES % (
+        len(all_possible_patterns_ordered) + 1
+    )  # Add one to account for trailing cycle
+    pattern = all_possible_patterns_ordered[remainder + 1]
 
     load = get_load(pattern)
 
@@ -155,3 +150,6 @@ def main_2():
 
 if __name__ == "__main__":
     main_2()
+
+# 102007
+# 102121
