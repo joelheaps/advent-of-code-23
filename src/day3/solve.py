@@ -1,29 +1,42 @@
-from dataclasses import dataclass
+import re
+from reader import input_data
 
-NUMBERS: str = "1234567890"
-NOT_SYMBOLS: str = NUMBERS + "."
-
-
-def symbol_adjacent(line: str, first: int, last: int) -> bool:
-    """Checks whether a symbol is directly touching the specified range in the current line."""
-    return (line[first - 1] not in NOT_SYMBOLS) or (line[last + 1] not in NOT_SYMBOLS)
+# Get unique symbols from input data
+SYMBOLS = set(filter(lambda char: not char.isdigit() and char not in "\n.", input_data))
+INPUT_LINES = input_data.splitlines()
 
 
-def is_valid_part_loc(string: str, line_n: int, first: int, last: int) -> bool:
-    lines = string.splitlines()
-    test_cases: list[bool] = []
+def is_adjacent_to_symbol(pattern: str, row: int, col: int) -> bool:
+    # Check adjacent cells for symbols
+    for r in range(row - 1, row + 2):
+        for c in range(col - 1, col + 2):
+            try:
+                if pattern[r][c] in SYMBOLS:
+                    return True
+            except IndexError:
+                pass
+    return False
 
-    # check previous line
-    prev_line_n: int = line_n - 1
-    if prev_line_n >= 0:
-        test_cases.append(symbol_adjacent(lines[prev_line_n], first, last))
 
-    # check current line
-    test_cases.append(symbol_adjacent(lines[line_n], first, last))
+def get_part_numbers():
+    part_numbers = []
 
-    # check next line:
-    next_line_n = line_n + 1
-    if next_line_n <= len(lines):
-        test_cases.append(symbol_adjacent(lines[next_line_n], first, last))
+    for r, line in enumerate(INPUT_LINES):
+        for match in re.finditer(r"\d+", line):
+            number = match.group()
+            possible_adjacencies = [
+                is_adjacent_to_symbol(INPUT_LINES, r, c)
+                for c in range(match.start(), match.end())
+            ]
+            if any(possible_adjacencies):
+                part_numbers.append(int(number))
 
-    return any(test_cases)
+    return part_numbers
+
+
+# Calculating the sum of part numbers
+part_numbers = get_part_numbers()
+print("Part numbers:", part_numbers)
+print("Sum of part numbers:", sum(part_numbers))
+
+# I had a little help cleaning this one up :)
