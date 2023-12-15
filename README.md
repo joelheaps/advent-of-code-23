@@ -1,8 +1,10 @@
 # Advent of Code 2023
 
-https://adventofcode.com/
+See [adventofcode.com](https://adventofcode.com/) 🎄
 
-Get started with:
+----
+
+Bootstrap dependencies and get started with
 
 ```shell
 pdm install
