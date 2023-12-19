@@ -84,17 +84,22 @@ class Grid:
                 else:
                     new_steps = 1
 
-                # Only add the neighbor if it hasn't exceeded 3 steps in the same direction
-                if new_steps <= 3:
+                if new_steps <= 10:
                     if (
-                        not OPPOSITE_DIRECTIONS[direction] == new_direction
-                    ):  # Don't reverse
-                        neighbors.append(
-                            (
-                                (new_row, new_col, new_direction, new_steps),
-                                self.get_value((new_row, new_col)),
+                        (new_steps >= 4)
+                        or (steps >= 4)
+                        or (new_direction == direction)
+                        or (direction == Direction.NONE)
+                    ):
+                        if (
+                            not OPPOSITE_DIRECTIONS[direction] == new_direction
+                        ):  # Don't reverse
+                            neighbors.append(
+                                (
+                                    (new_row, new_col, new_direction, new_steps),
+                                    self.get_value((new_row, new_col)),
+                                )
                             )
-                        )
 
         return neighbors
 
@@ -190,9 +195,6 @@ def main():
     path = reconstruct_path(
         previous_blocks, path_cost, start_block, (len(lines) - 1, len(lines[0]) - 1)
     )
-    # print(path)
-
-    # visualize_path(grid, path)
 
 
 if __name__ == "__main__":

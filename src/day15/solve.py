@@ -29,7 +29,7 @@ class Lens:
         return holiday_hash(self.label)
 
 
-def replace_lens(box: list[int], lens: Lens, pop: bool=False) -> list[int]:
+def replace_lens(box: list[int], lens: Lens, pop: bool = False) -> list[int]:
     for i in range(len(box)):
         if box[i].label == lens.label:
             if pop:
@@ -44,8 +44,9 @@ def main_1():
     hashes: list[int] = [holiday_hash(s) for s in input_data.split(",")]
     print("sum:", sum(hashes))
 
+
 def main_2():
-    boxes: dict[int, list[int]] = {} # 256 boxes
+    boxes: dict[int, list[int]] = {}  # 256 boxes
 
     for instruction in input_data.split(","):
         if "=" in instruction:
@@ -69,7 +70,6 @@ def main_2():
             if lens.loc in boxes:
                 boxes[lens.loc] = replace_lens(boxes[lens.loc], lens, pop=True)
 
-    
     for key, value in dict(sorted(boxes.items())).items():
         print(f"box {key}: {[f'{lens.label}:{lens.focal_length}' for lens in value]}")
 
@@ -83,7 +83,6 @@ def main_2():
             lens_powers.append(power)
 
     print("total power:", sum(lens_powers))
-
 
 
 if __name__ == "__main__":
